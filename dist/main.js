@@ -1,52 +1,96 @@
 "use strict";
-var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var express = require('express');
-var _a = require('apollo-server-express'), ApolloServer = _a.ApolloServer, gql = _a.gql;
-var books = [
-    {
-        title: 'The Awakening',
-        author: 'Kate Chopin',
-    },
-    {
-        title: 'City of Glass',
-        author: 'Paul Auster',
-    },
-];
-var users = [
-    {
-        id: '123',
-        email: 'nurrizkydfsdfs@gmi.com',
-    },
-    {
-        id: '1234',
-        email: 'asdfafdad@gmail.com'
-    },
-];
-var typeDefs = gql(__makeTemplateObject(["\n\n  type Book{\n    title: String\n    author: String\n  }\n\n  type Resp {\n    success: Boolean\n    message: String\n  }\n\n  type User {\n    id: String!\n    email: String!\n  }\n\n  type Query {\n    hello: String\n    books: [Book]\n    user(id: String!) : User\n  }\n\n  type Mutation {\n    createBook(title: String, author: String): Resp \n  }\n\n\n"], ["\n\n  type Book{\n    title: String\n    author: String\n  }\n\n  type Resp {\n    success: Boolean\n    message: String\n  }\n\n  type User {\n    id: String!\n    email: String!\n  }\n\n  type Query {\n    hello: String\n    books: [Book]\n    user(id: String!) : User\n  }\n\n  type Mutation {\n    createBook(title: String, author: String): Resp \n  }\n\n\n"]));
-var resolvers = {
-    Query: {
-        hello: function () { return 'Hello world!'; },
-        books: function () { return books; },
-    },
-    Mutation: {
-        createBook: function (title, author) {
-            books.push({
-                title: title,
-                author: author
-            });
-            return {
-                success: true,
-                message: 'successfully submited'
-            };
-        }
+Object.defineProperty(exports, "__esModule", { value: true });
+require("reflect-metadata");
+const express_1 = __importDefault(require("express"));
+const apollo_server_express_1 = require("apollo-server-express");
+const typeorm_1 = require("typeorm");
+const book_1 = require("./entities/book");
+const main = async () => {
+    const connection = await typeorm_1.createConnection({
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'nurrizkyimani',
+        database: 'coba1',
+        logging: true,
+        synchronize: true,
+        entities: [book_1.Book]
+    });
+    if (connection.isConnected) {
+        console.log(`Database is connected via localhost`);
     }
+    const books = [
+        {
+            title: 'The Awakening',
+            author: 'Kate Chopin',
+        },
+        {
+            title: 'City of Glass',
+            author: 'Paul Auster',
+        },
+    ];
+    const users = [
+        {
+            id: '123',
+            email: 'nurrizkydfsdfs@gmi.com',
+        },
+        {
+            id: '1234',
+            email: 'asdfafdad@gmail.com'
+        },
+    ];
+    const typeDefs = apollo_server_express_1.gql `
+
+    type Book{
+      title: String
+      author: String
+    }
+
+    type Resp {
+      success: Boolean
+      message: String
+    }
+
+    type User {
+      id: String!
+      email: String!
+    }
+
+    type Query {
+      hello: String
+      books: [Book]
+      user(id: String!) : User
+    }
+
+    type Mutation {
+      createBook(title: String, author: String): Resp 
+    }
+
+  `;
+    const resolvers = {
+        Query: {
+            hello: () => 'Hello world!',
+            books: () => books,
+        },
+        Mutation: {
+            createBook: (title, author) => {
+                books.push({
+                    title: title,
+                    author: author
+                });
+                return {
+                    success: true,
+                    message: 'successfully submited'
+                };
+            }
+        }
+    };
+    const server = new apollo_server_express_1.ApolloServer({ typeDefs, resolvers });
+    const app = express_1.default();
+    server.applyMiddleware({ app });
+    app.listen({ port: 4000 }, () => console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`));
 };
-var server = new ApolloServer({ typeDefs: typeDefs, resolvers: resolvers });
-var app = express();
-server.applyMiddleware({ app: app });
-app.listen({ port: 4000 }, function () {
-    return console.log("\uD83D\uDE80 Server ready at http://localhost:4000" + server.graphqlPath);
-});
+main();
