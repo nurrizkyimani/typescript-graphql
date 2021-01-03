@@ -14,38 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookResolver = void 0;
 const type_graphql_1 = require("type-graphql");
+const typeorm_1 = require("typeorm");
 const book_1 = require("../entities/book");
-let BookResolver = class BookResolver {
-    async readBooks() {
-        return book_1.Book.find();
-    }
-    addBook(newBookData) {
-        try {
-            book_1.Book.insert(newBookData);
-            return new Response(200, "sucesss");
-        }
-        catch (error) {
-            throw Error(`error in resolver :  ${error}`);
-        }
-    }
-};
-__decorate([
-    type_graphql_1.Query(() => [book_1.Book]),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], BookResolver.prototype, "readBooks", null);
-__decorate([
-    type_graphql_1.Mutation(),
-    __param(0, type_graphql_1.Arg("Book")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [AddBookInput]),
-    __metadata("design:returntype", Object)
-], BookResolver.prototype, "addBook", null);
-BookResolver = __decorate([
-    type_graphql_1.Resolver()
-], BookResolver);
-exports.BookResolver = BookResolver;
 let AddBookInput = class AddBookInput {
 };
 __decorate([
@@ -77,3 +47,69 @@ Response = __decorate([
     type_graphql_1.ObjectType(),
     __metadata("design:paramtypes", [Number, String])
 ], Response);
+let BookResolver = class BookResolver {
+    async readBooks() {
+        return book_1.Book.find();
+    }
+    async readBookById(id) {
+        return book_1.Book.findOne({
+            where: {
+                id: id
+            }
+        });
+    }
+    addBook(newBookData) {
+        try {
+            book_1.Book.insert(newBookData);
+            return new Response(200, "sucesss");
+        }
+        catch (error) {
+            return new Response(400, "failed in the response");
+        }
+    }
+    async deleteBook(id) {
+        try {
+            await typeorm_1.getConnection()
+                .createQueryBuilder()
+                .delete()
+                .from(book_1.Book)
+                .where("id = :id", { id: id })
+                .execute();
+            return new Response(200, "sucesss");
+        }
+        catch (error) {
+            return new Response(400, "failed in the response");
+        }
+    }
+};
+__decorate([
+    type_graphql_1.Query(() => [book_1.Book]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], BookResolver.prototype, "readBooks", null);
+__decorate([
+    type_graphql_1.Query(() => book_1.Book),
+    __param(0, type_graphql_1.Arg("id", { nullable: false })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BookResolver.prototype, "readBookById", null);
+__decorate([
+    type_graphql_1.Mutation(),
+    __param(0, type_graphql_1.Arg("Book")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [AddBookInput]),
+    __metadata("design:returntype", Response)
+], BookResolver.prototype, "addBook", null);
+__decorate([
+    type_graphql_1.Mutation(),
+    __param(0, type_graphql_1.Arg("id", { nullable: false })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BookResolver.prototype, "deleteBook", null);
+BookResolver = __decorate([
+    type_graphql_1.Resolver()
+], BookResolver);
+exports.BookResolver = BookResolver;

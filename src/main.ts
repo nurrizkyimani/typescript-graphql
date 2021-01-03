@@ -3,11 +3,12 @@ import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import { createConnection, Connection } from 'typeorm'
 import { Book } from "./entities/book";
+import { buildSchema } from "type-graphql";
+import { BookResolver } from "./resolver/resolver";
 
 
 
 const main = async () => {
-  
 
   const connection: Connection = await createConnection({
     type: 'postgres',
@@ -24,86 +25,12 @@ const main = async () => {
     console.log(`Database is connected via localhost`)
   }
 
-
-  const books = [
-    {
-      title: 'The Awakening',
-      author: 'Kate Chopin',
-    },
-    {
-      title: 'City of Glass',
-      author: 'Paul Auster',
-    },
-    
-  ];
-
-  const users = [
-    {
-      id: '123',
-      email: 'nurrizkydfsdfs@gmi.com',
-    },
-    {
-      id: '1234',
-      email: 'asdfafdad@gmail.com'
-    },
-  
-    
-  ];
-
-  // Construct a schema, using GraphQL schema language
-  const typeDefs = gql`
-
-    type Book{
-      title: String
-      author: String
-    }
-
-    type Resp {
-      success: Boolean
-      message: String
-    }
-
-    type User {
-      id: String!
-      email: String!
-    }
-
-    type Query {
-      hello: String
-      books: [Book]
-      user(id: String!) : User
-    }
-
-    type Mutation {
-      createBook(title: String, author: String): Resp 
-    }
-
-  `;
-
-  // Provide resolver functions for your schema fields
-  const resolvers = {
-    Query: {
-      hello: () => 'Hello world!',
-      books: () => books,
-    },
-
-    Mutation: {
-      createBook: (title: string, author: string) => {
-        books.push({
-          title: title, 
-          author: author
-        })
-
-        return {
-          success: true, 
-          message: 'successfully submited'
-        }
-
-      }
-    }
-  };
-
-  const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [BookResolver],
+      validate: false
+    })
+  });
 
   const app = express();
   server.applyMiddleware({ app });
@@ -114,4 +41,6 @@ const main = async () => {
 
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+});

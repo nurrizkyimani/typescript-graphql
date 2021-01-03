@@ -15,6 +15,11 @@ const typeorm_1 = require("typeorm");
 let Book = class Book extends typeorm_1.BaseEntity {
 };
 __decorate([
+    typeorm_1.PrimaryGeneratedColumn("uuid"),
+    type_graphql_1.Field(type => type_graphql_1.ID),
+    __metadata("design:type", String)
+], Book.prototype, "id", void 0);
+__decorate([
     typeorm_1.PrimaryColumn(),
     type_graphql_1.Field(),
     __metadata("design:type", String)
