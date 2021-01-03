@@ -52,7 +52,7 @@ let BookResolver = class BookResolver {
         return book_1.Book.find();
     }
     async readBookById(id) {
-        return book_1.Book.findOne({
+        return await book_1.Book.findOne({
             where: {
                 id: id
             }
@@ -96,14 +96,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], BookResolver.prototype, "readBookById", null);
 __decorate([
-    type_graphql_1.Mutation(),
+    type_graphql_1.Mutation(() => Response),
     __param(0, type_graphql_1.Arg("Book")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [AddBookInput]),
     __metadata("design:returntype", Response)
 ], BookResolver.prototype, "addBook", null);
 __decorate([
-    type_graphql_1.Mutation(),
+    type_graphql_1.Mutation(() => Response),
     __param(0, type_graphql_1.Arg("id", { nullable: false })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

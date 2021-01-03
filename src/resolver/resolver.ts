@@ -35,24 +35,24 @@ export class BookResolver {
 
 
   //find all books
-  @Query(() => [Book])
-  async readBooks() : Promise<Book[]> {
+  @Query(() => [Book] )
+  async readBooks(): Promise<Book[] | undefined> {
     return Book.find()
   }
   
   //find by id 
   @Query(() => Book)
-  async readBookById(
-    @Arg("id", { nullable: false }) id: string,
-  ): Promise<Book | undefined > {
-    return Book.findOne({
+  async readBookById( @Arg("id", { nullable: false }) id: string,): Promise<Book | undefined > {
+    return await Book.findOne({
       where: {
         id : id
-    }})
+      }
+    })
+    
   }
 
   //add books
-  @Mutation()
+  @Mutation(() => Response)
   addBook(@Arg("Book") newBookData: AddBookInput): Response  {  
     try {
       Book.insert(newBookData)
@@ -64,7 +64,7 @@ export class BookResolver {
   }
 
   
-  @Mutation()
+  @Mutation(() => Response)
   async deleteBook(@Arg("id", { nullable: false }) id: string): Promise<Response> {
     try {
 
