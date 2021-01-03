@@ -29,6 +29,20 @@ class Response {
 
 }
 
+
+@ObjectType()
+class ResponseData {
+
+  @Field()
+  success: number
+  
+  @Field()
+  message: string
+
+  @Field()
+  data : Book
+}
+
 //resolver itself; 
 @Resolver()
 export class BookResolver {
@@ -48,7 +62,6 @@ export class BookResolver {
         id : id
       }
     })
-    
   }
 
   //add books
