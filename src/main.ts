@@ -12,9 +12,10 @@ const main = async () => {
 
   const connection: Connection = await createConnection({
     type: 'postgres',
-    host: 'host.docker.internal',
-    port: 5432,
+    host: 'localhost',
+    port: 5433,
     username: 'nurrizkyimani',
+    password: 'password',
     database: 'coba1',
     logging: true, 
     synchronize: true,

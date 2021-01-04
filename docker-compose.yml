@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    ports:
+      - "4000:4000" 
+  db:
+    image: "postgres:13.1-alpine"
+    restart: "always"
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: "nurrizkyimani"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "coba1"
+    volumes:
+      - /Volumes:/var/lib/postgresql/data

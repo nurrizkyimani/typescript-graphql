@@ -14,7 +14,7 @@ const main = async () => {
     const connection = await typeorm_1.createConnection({
         type: 'postgres',
         host: 'localhost',
-        port: 5432,
+        port: 5433,
         username: 'nurrizkyimani',
         database: 'coba1',
         logging: true,
