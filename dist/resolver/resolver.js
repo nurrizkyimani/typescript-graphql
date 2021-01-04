@@ -47,6 +47,23 @@ Response = __decorate([
     type_graphql_1.ObjectType(),
     __metadata("design:paramtypes", [Number, String])
 ], Response);
+let ResponseData = class ResponseData {
+};
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], ResponseData.prototype, "success", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], ResponseData.prototype, "message", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", book_1.Book)
+], ResponseData.prototype, "data", void 0);
+ResponseData = __decorate([
+    type_graphql_1.ObjectType()
+], ResponseData);
 let BookResolver = class BookResolver {
     async readBooks() {
         return book_1.Book.find();
