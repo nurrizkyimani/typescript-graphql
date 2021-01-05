@@ -26,7 +26,7 @@ const main = async () => {
     console.log(`Database is connected via localhost`)
   }
 
-  const server = new ApolloServer({
+   const server = new ApolloServer({
     schema: await buildSchema({
       resolvers: [BookResolver],
       validate: false
@@ -40,7 +40,10 @@ const main = async () => {
     console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
   );
 
+  
 }
+
+
 
 main().catch((err) => {
   console.error(err);
