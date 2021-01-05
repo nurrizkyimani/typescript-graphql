@@ -1,16 +1,20 @@
 services:
   web:
-    build: .
+    image: bocahrokok/walking-typescript-graphql:v1
+    container_name: "project_backend"
     ports:
       - "4000:4000" 
+    depends_on: 
+      - db
   db:
     image: "postgres:13.1-alpine"
-    restart: "always"
-    ports:
-      - "5433:5432"
+    container_name: "project_db"
     environment:
       POSTGRES_USER: "nurrizkyimani"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "coba1"
+    ports:
+      - "5432:5432"
     volumes:
       - /Volumes:/var/lib/postgresql/data
+    restart: "always"

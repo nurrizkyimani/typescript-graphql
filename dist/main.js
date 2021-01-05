@@ -16,6 +16,7 @@ const main = async () => {
         host: 'localhost',
         port: 5433,
         username: 'nurrizkyimani',
+        password: 'password',
         database: 'coba1',
         logging: true,
         synchronize: true,
